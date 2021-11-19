@@ -1,143 +1,157 @@
 import 'package:flutter/material.dart';
-
+import 'package:my_first_app/widgets.dart';
+import './itemmanager.dart';
+import 'additem.dart';
+ 
 void main() {
   runApp(MyApp());
 }
-
+ 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: MainView(),
+      debugShowCheckedModeBanner: false,
+      title: 'Shopping List',
+      theme: ThemeData(
+        primarySwatch: Colors.lightBlue,
+      ),
+      home: MyHomePage(title: 'Shopping list'),
     );
   }
 }
-
-class MainView extends StatelessWidget {
+ 
+class MyHomePage extends StatefulWidget {
+  MyHomePage({Key? key, required this.title}) : super(key: key);
+ 
+  final String title;
+ 
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+ 
+class _MyHomePageState extends State<MyHomePage> {
+  ListManager myListManager = new ListManager();
+ 
+  void _addItem(AddItem Item) {
+    setState(() {
+      myListManager.addShoppingItem(Item);
+    });
+  }
+ 
+  void _toggleStatus(int index) {
+    setState(() {
+      myListManager.markStatus(index: index);
+    });
+  }
+ 
+  void _removeItem(int index) {
+    setState(() {
+      myListManager.removeShoppingItem(
+          id: myListManager.ShoppingItems[index].id);
+    });
+  }
+ 
+  Icon _getCheckboxIcon(int index) {
+    return myListManager.ShoppingItems[index].status
+        ? Icon(
+            Icons.check_box_outlined,
+            size: 20.0,
+            color: Colors.lightBlue[400],
+          )
+        : Icon(
+            Icons.check_box_outline_blank,
+            size: 20.0,
+            color: Colors.lightBlue[400],
+          );
+  }
+ 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.lightBlue,
-        title: Center(
-            child: Padding(
-          padding: const EdgeInsets.only(left: 55.0),
-          child: Text('Shopping List'),
-        )
+        appBar: AppBar(
+          title: Text(widget.title),
+          actions: [
+            _dropDownMenu(),
+          ],
         ),
-        actions: [
-          _dropdownMenu(),
-             ],           
-      ),
-    
-      body: ListView(children: [
-        _checkbox('Milk'),
-        _checkbox('Eggs'),
-        _checkbox('Sriracha'),
-        _checkbox('Instant noodles'),
-      ]
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        backgroundColor: Colors.lightBlue,
-        onPressed: () {
-          print('add items page11');
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => SecondView()));
-        },
-      ),
-    );
+        body: ListView.builder(
+            itemCount: myListManager.ShoppingItems.length,
+            itemBuilder: (context, index) {
+              return Card(
+                key: UniqueKey(),
+                child: ListTile(
+                  title: Text(
+                    myListManager.ShoppingItems[index].title,
+                    style: myListManager.ShoppingItems[index].status
+                        ? TextStyle(decoration: TextDecoration.lineThrough)
+                        : TextStyle(decoration: TextDecoration.none),
+                  ),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      IconButton(
+                        icon: _getCheckboxIcon(index),
+                        onPressed: () {
+                          _toggleStatus(index);
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(
+                          Icons.delete_outline,
+                          size: 20.0,
+                          color: Colors.lightBlue[400],
+                        ),
+                        onPressed: () {
+                          _removeItem(index);
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }),
+        floatingActionButton: PopupForm(callback: _addItem));
   }
 }
-
-
-
-Widget _dropdownMenu() {
-  List<String> alt = ['Create new list', 'Check all', 'Uncheck all', 'Delete list'];
-
-  return PopupMenuButton<String>(
-    icon: Icon(Icons.filter_list),
-    onSelected: altAction,
-        itemBuilder: (BuildContext context) {
-          return alt.map((String alt) {
-            return PopupMenuItem(
-              value: alt,
-              child: Text(alt),
-            );
-          }).toList();
-        }
-      );
-    }
  
-    
-    class SecondView extends StatelessWidget {
-      @override
-      Widget build(BuildContext context) {
-        return Scaffold(
-          appBar: AppBar(
-              backgroundColor: Colors.lightBlue,
-              title: Center(
-                child: Text('Add groceries'),
-              )
-              ),
-          body: Padding(
-            padding: const EdgeInsets.all(25.0),
-            child: Column(
-              children: [
-                _textField(),
-                Padding(
-                  padding: EdgeInsets.only(left: 105.0, top: 30),
-                  child: Row(children: [
-                    _plusIcon(),
-                    _textBox(),
-                  ]),
-                ),
-              ],
-            ),
-          ),
-        );
-      }
-    }
-  
-    Widget _textBox() {
-      return Text('Add item');
-    }
-    
-    Widget _plusIcon() {
-      return IconButton(
-        icon: Icon(Icons.add),
-        onPressed: () {},
-      );
-    }
-    
-    Widget _textField() {
-      return TextField(
-          decoration: InputDecoration(
-              hintText: 'Add groceries', border: const OutlineInputBorder()
-              )
-           );
-    }
-    
-    Widget _checkbox(String toDo) {
-      return CheckboxListTile(
-          title: Text(toDo),
-          value: false,
-          onChanged: (value) {
-            print('under construction');
-          });
-    }
-    
-    void altAction(String alt) {
-      if (alt == 'Create new list') {
-        print('New list Created');
-        } 
-        else if(alt == 'Check all') {
-          print('All items checked');
-        } 
-        else if(alt == 'Uncheck all') {
-          print('List unchecked');
-        }
-        else if(alt == 'Delete list'){
-          print('List deleted');
-        }
-    }
+Widget _dropDownMenu() {
+  List<String> filterBy = ['all', 'done', 'undone'];
+ 
+  return PopupMenuButton<String>(
+      icon: Icon(Icons.filter_list),
+      onSelected: altAction,
+      itemBuilder: (BuildContext context) {
+        return filterBy.map((String alt) {
+          return PopupMenuItem(
+            value: alt,
+            child: Text(alt),
+          );
+        }).toList();
+      });
+}
+ 
+void altAction(String alt) {
+  if (alt == 'all') {
+    print('all items');
+  } else if (alt == 'done') {
+    print('done items');
+  } else if (alt == 'undone') {
+    print('undone items');
+  }
+}
+ 
+ 
+/*
+void altAction(String filterBy) {
+  if (filterBy == 'all') {
+    return ;
+  } else if (filterBy == 'done') {
+    var list;
+    return list.where((item) =>);
+  } else if (filterBy == 'undone') {
+    return;
+  }
+}
+ 
+*/
