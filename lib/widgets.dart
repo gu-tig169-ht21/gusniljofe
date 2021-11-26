@@ -13,7 +13,7 @@ class _PopupFormState extends State<PopupForm> {
   var titleController = new TextEditingController();
 
   void _addItem() {
-    var item = AddItem(title: titleController.text, status: false);
+    var item = ShoppingItem(title: titleController.text, status: false);
 
     setState(() {
       titleController.clear();

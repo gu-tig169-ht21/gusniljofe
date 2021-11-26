@@ -1,11 +1,13 @@
 import 'additem.dart';
 
 class ListManager {
-  List<AddItem> ShoppingItems = [];
+  List<ShoppingItem> ShoppingItems = [];
+
+  var status;
 
   ListManager();
 
-  void addShoppingItem(AddItem item) {
+  void addShoppingItem(ShoppingItem item) {
     ShoppingItems.add(item);
   }
 
