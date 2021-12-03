@@ -1,30 +1,26 @@
-import 'additem.dart';
-
+import './additem.dart';
+ 
 class ListManager {
-  List<ShoppingItem> ShoppingItems = [];
-
-  var status;
-
-  ListManager();
-
+  List<ShoppingItem> shoppingItems = [];
+ 
   void addShoppingItem(ShoppingItem item) {
-    ShoppingItems.add(item);
+    shoppingItems.add(item);
   }
-
-  void removeShoppingItem({id: String}) {
-    ShoppingItems.removeWhere((element) => element.id == id);
+ 
+  void removeShoppingItem({required String id}) {
+    shoppingItems.removeWhere((element) => element.id == id);
   }
-
-  void markAsComplete({id: String}) {
-    ShoppingItems.firstWhere((element) => element.id == id).status = true;
+ 
+  void markAsComplete({required String id}) {
+    shoppingItems.firstWhere((element) => element.id == id).status = true;
   }
-
-  void markAsIncomplete({id: String}) {
-    ShoppingItems.firstWhere((element) => element.id == id).status = false;
+ 
+  void markAsIncomplete({required String id}) {
+    shoppingItems.firstWhere((element) => element.id == id).status = false;
   }
-
-  void markStatus({index: int}) {
-    ShoppingItems[index].status = !ShoppingItems[index].status;
+ 
+  void markStatus({required int index}) {
+    shoppingItems[index].status = !shoppingItems[index].status;
   }
 }
- 
+

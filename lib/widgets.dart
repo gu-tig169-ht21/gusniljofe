@@ -1,27 +1,27 @@
 import 'package:flutter/material.dart';
-import 'additem.dart';
-
+import './additem.dart';
+ 
 class PopupForm extends StatefulWidget {
-  Function callback;
-  PopupForm({Key? key, required this.callback}) : super(key: key);
-
+  final Function callback;
+  const PopupForm({Key? key, required this.callback}) : super(key: key);
+ 
   @override
   _PopupFormState createState() => _PopupFormState();
 }
-
+ 
 class _PopupFormState extends State<PopupForm> {
-  var titleController = new TextEditingController();
-
+  var titleController = TextEditingController();
+ 
   void _addItem() {
     var item = ShoppingItem(title: titleController.text, status: false);
-
+ 
     setState(() {
       titleController.clear();
     });
     widget.callback(item);
     Navigator.pop(context);
   }
-
+ 
   Widget _openDialog() {
     return AlertDialog(
       scrollable: true,
@@ -57,7 +57,7 @@ class _PopupFormState extends State<PopupForm> {
       ],
     );
   }
-
+ 
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton(
@@ -69,3 +69,4 @@ class _PopupFormState extends State<PopupForm> {
     );
   }
 }
+ 
