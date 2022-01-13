@@ -2,13 +2,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'additem.dart';
 import 'api.dart';
+import './additem.dart';
+import './api.dart';
+ 
 
 class ShoppingNotifier extends ChangeNotifier {
   List<ShoppingItem> _cachedList = [];
   List<ShoppingItem> list = [];
   ValueNotifier<String> filterText = ValueNotifier('All');
   bool fatching = false;
-
   Future getShoppingItem() async {
     fatching = true;
     list = await Api.getItems();

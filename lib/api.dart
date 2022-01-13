@@ -5,7 +5,9 @@ import 'dart:convert';
 
 String url = 'https://todoapp-api-pyq5q.ondigitalocean.app';
 String apiKey = '8d89bbbd-62e5-44c3-97ea-b81ab773da13';
-
+String url = 'https://todoapp-api-pyq5q.ondigitalocean.app';
+String apiKey = '8d89bbbd-62e5-44c3-97ea-b81ab773da13';
+ 
 class Api {
   static Future<List<ShoppingItem>> getItems() async {
     var response = await http.get(Uri.parse('$url/todos?key=$apiKey'));
@@ -17,10 +19,12 @@ class Api {
               .map<ShoppingItem>((obj) => ShoppingItem.fromJson(obj))
               .toList();
     }
-
     return [];
   }
-
+ 
+    return [];
+  }
+ 
   static Future<void> addShoppingItem(ShoppingItem shoppingItem) async {
     shoppingItem.status = false;
     await http.post(Uri.parse('$url/todos?key=$apiKey'),
@@ -43,6 +47,8 @@ class Api {
     }
   }
 
+
+ 
   static Future removeTodoModel(String todoId) async {
     try {
       var response =
@@ -55,3 +61,4 @@ class Api {
     }
   }
 }
+
