@@ -8,6 +8,7 @@ import './api.dart';
 import './shopping_notifier.dart';
 import './widgets.dart';
 import 'package:provider/provider.dart';
+
 import 'additem.dart';
 
 void main() {
@@ -35,12 +36,16 @@ class MyApp extends StatelessWidget {
 
 class ListManager {
   List<ShoppingItem> shoppingItems = [];
+
 }
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
 
+
  
+}
+
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
  
