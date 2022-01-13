@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'additem.dart';
 
 class PopupForm extends StatefulWidget {
-  Function callback;
-  PopupForm({Key? key, required this.callback}) : super(key: key);
+  final Function callback;
+  const PopupForm({Key? key, required this.callback}) : super(key: key);
 
   @override
   _PopupFormState createState() => _PopupFormState();
 }
 
 class _PopupFormState extends State<PopupForm> {
-  var titleController = new TextEditingController();
+  var titleController = TextEditingController();
 
   void _addItem() {
     var item = ShoppingItem(title: titleController.text, status: false);

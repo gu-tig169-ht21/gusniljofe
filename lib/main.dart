@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:my_first_app/shopping_notifier.dart';
 import 'package:my_first_app/widgets.dart';
-import './itemmanager.dart';
+import 'package:provider/provider.dart';
 import 'additem.dart';
 
 void main() {
@@ -18,13 +19,20 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.lightBlue,
       ),
-      home: MyHomePage(title: 'Shopping list'),
+      home: ChangeNotifierProvider<ShoppingNotifier>(
+        create: (context) => ShoppingNotifier(),
+        child: const MyHomePage(title: 'Shopping list'),
+      ),
     );
   }
 }
 
+class ListManager {
+  List<ShoppingItem> shoppingItems = [];
+}
+
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, required this.title}) : super(key: key);
+  const MyHomePage({Key? key, required this.title}) : super(key: key);
 
   final String title;
 
@@ -38,27 +46,33 @@ class _MyHomePageState extends State<MyHomePage> {
   List<ListManager> list = <ListManager>[];
   String activeFilter = 'All';
 
-  void _addItem(ShoppingItem Item) {
-    setState(() {
-      myListManager.addShoppingItem(Item);
+  @override
+  void initState() {
+    var provider = context.read<ShoppingNotifier>();
+    provider.getShoppingItem();
+    provider.filterText.addListener(() {
+      setState(() {
+        activeFilter = provider.filterText.value;
+      });
     });
+
+    super.initState();
   }
 
-  void _toggleStatus(int index) {
-    setState(() {
-      myListManager.markStatus(index: index);
-    });
+  void _addItem(ShoppingItem item) async {
+    context.read<ShoppingNotifier>().addShoppingItem(item);
   }
 
-  void _removeItem(int index) {
-    setState(() {
-      myListManager.removeShoppingItem(
-          id: myListManager.ShoppingItems[index].id);
-    });
+  void _toggleStatus(ShoppingItem shoppingItem) async {
+    await context.read<ShoppingNotifier>().setDoneShoppingItem(shoppingItem);
   }
 
-  Icon _getCheckboxIcon(int index) {
-    return myListManager.ShoppingItems[index].status
+  void _removeItem(ShoppingItem item) {
+    context.read<ShoppingNotifier>().removeShoppingItem(item);
+  }
+
+  Icon _getCheckboxIcon(bool state) {
+    return state
         ? Icon(
             Icons.check_box_outlined,
             size: 20.0,
@@ -73,83 +87,100 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    var filteredList = _filter(myListManager.ShoppingItems);
     return Scaffold(
         appBar: AppBar(
           title: Text(widget.title),
           actions: [
             PopupMenuButton(
-                itemBuilder: (context) => [
-                      const PopupMenuItem(child: Text('All'), value: 'All'),
-                      const PopupMenuItem(child: Text('Done'), value: 'Done'),
-                      const PopupMenuItem(
-                          child: Text('Undone'), value: 'Undone'),
-                    ],
-                onSelected: (String value) {
-                  setState(() {
-                    activeFilter = value;
-                  });
-                }),
+              itemBuilder: (context) => [
+                PopupMenuItem(
+                    child: Text(
+                      'All',
+                      style: TextStyle(
+                          fontWeight: activeFilter == 'All'
+                              ? FontWeight.bold
+                              : FontWeight.normal),
+                    ),
+                    value: 'All'),
+                PopupMenuItem(
+                    child: Text(
+                      'Done',
+                      style: TextStyle(
+                          fontWeight: activeFilter == 'Done'
+                              ? FontWeight.bold
+                              : FontWeight.normal),
+                    ),
+                    value: 'Done'),
+                PopupMenuItem(
+                    child: Text(
+                      'Undone',
+                      style: TextStyle(
+                          fontWeight: activeFilter == 'Undone'
+                              ? FontWeight.bold
+                              : FontWeight.normal),
+                    ),
+                    value: 'Undone'),
+              ],
+              onSelected: (String value) {
+                setState(
+                  () {
+                    context.read<ShoppingNotifier>().filterShoppingItem(value);
+                  },
+                );
+              },
+            ),
           ],
         ),
-        body: _buildbody(filteredList),
+        body: _buildbody(),
         floatingActionButton: PopupForm(callback: _addItem));
   }
 
-  Widget _buildbody(List<ShoppingItem> filteredList) {
-    return ListView.builder(
-        itemCount: filteredList.length,
-        itemBuilder: (context, index) {
-          return Card(
-            key: UniqueKey(),
-            child: ListTile(
-              title: Text(
-                filteredList[index].title,
-                style: filteredList[index].status
-                    ? TextStyle(decoration: TextDecoration.lineThrough)
-                    : TextStyle(decoration: TextDecoration.none),
-              ),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  IconButton(
-                    icon: _getCheckboxIcon(index),
-                    onPressed: () {
-                      _toggleStatus(index);
-                    },
-                  ),
-                  IconButton(
-                    icon: Icon(
-                      Icons.delete_outline,
-                      size: 20.0,
-                      color: Colors.lightBlue[400],
+  Widget _buildbody() {
+    return Consumer<ShoppingNotifier>(
+      builder: (context, value, child) => value.fatching
+          ? const Center(child: CircularProgressIndicator())
+          : ListView.builder(
+              itemCount: value.list.length,
+              itemBuilder: (context, index) {
+                var item = value.list[index];
+                return Card(
+                  key: UniqueKey(),
+                  child: ListTile(
+                    title: Text(
+                      item.title,
+                      style: item.status
+                          ? const TextStyle(
+                              decoration: TextDecoration.lineThrough)
+                          : const TextStyle(decoration: TextDecoration.none),
                     ),
-                    onPressed: () {
-                      _removeItem(index);
-                    },
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        IconButton(
+                          icon: _getCheckboxIcon(item.status),
+                          onPressed: () {
+                            _toggleStatus(item);
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(
+                            Icons.delete_outline,
+                            size: 20.0,
+                            color: Colors.lightBlue[400],
+                          ),
+                          onPressed: () {
+                            _removeItem(item);
+                          },
+                        ),
+                      ],
+                    ),
                   ),
-                ],
-              ),
-            ),
-          );
-        });
+                );
+              }),
+    );
   }
 
-  List<ShoppingItem> _filter(List<ShoppingItem> listToFilter) {
-    if (activeFilter == 'Done') {
-      return listToFilter
-          .where((ShoppingItem item) => item.status == true)
-          .toList();
-    }
-    if (activeFilter == 'Undone') {
-      return listToFilter
-          .where((ShoppingItem item) => item.status == false)
-          .toList();
-    }
-    return listToFilter;
-  }
-
-  void setComplete(ShoppingItem check) {
+  void changeState(ShoppingItem check) {
     setState(() {
       check.status = !check.status;
     });
