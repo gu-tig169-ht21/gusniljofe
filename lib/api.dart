@@ -1,8 +1,10 @@
 import 'dart:developer';
 import 'package:http/http.dart' as http;
-import './additem.dart';
+import 'additem.dart';
 import 'dart:convert';
- 
+
+String url = 'https://todoapp-api-pyq5q.ondigitalocean.app';
+String apiKey = '8d89bbbd-62e5-44c3-97ea-b81ab773da13';
 String url = 'https://todoapp-api-pyq5q.ondigitalocean.app';
 String apiKey = '8d89bbbd-62e5-44c3-97ea-b81ab773da13';
  
@@ -17,6 +19,8 @@ class Api {
               .map<ShoppingItem>((obj) => ShoppingItem.fromJson(obj))
               .toList();
     }
+    return [];
+  }
  
     return [];
   }
@@ -27,7 +31,7 @@ class Api {
         body: jsonEncode(shoppingItem.toJson()),
         headers: {'Content-Type': 'application/json'});
   }
- 
+
   static Future updateShoppingItem(ShoppingItem todo) async {
     var response = await http.put(
         Uri.parse('$url/todos/${todo.id}?key=$apiKey'),
@@ -42,6 +46,8 @@ class Api {
       return null;
     }
   }
+
+
  
   static Future removeTodoModel(String todoId) async {
     try {
