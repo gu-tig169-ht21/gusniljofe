@@ -1,20 +1,14 @@
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:my_first_app/shopping_notifier.dart';
 import 'package:my_first_app/widgets.dart';
 import 'package:provider/provider.dart';
 import 'additem.dart';
-import './api.dart';
-import './shopping_notifier.dart';
-import './widgets.dart';
-import 'package:provider/provider.dart';
-
-import 'additem.dart';
+// updated
 
 void main() {
   runApp(const MyApp());
 }
- 
+
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -36,33 +30,22 @@ class MyApp extends StatelessWidget {
 
 class ListManager {
   List<ShoppingItem> shoppingItems = [];
-
 }
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-
- 
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
- 
 
   final String title;
- 
+
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
- 
+
 class _MyHomePageState extends State<MyHomePage> {
   ListManager myListManager = ListManager();
+
   List<ListManager> list = <ListManager>[];
   String activeFilter = 'All';
-  List<ListManager> list = <ListManager>[];
-  String activeFilter = 'All';
- 
 
   @override
   void initState() {
@@ -73,6 +56,7 @@ class _MyHomePageState extends State<MyHomePage> {
         activeFilter = provider.filterText.value;
       });
     });
+
     super.initState();
   }
 
@@ -87,22 +71,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void _removeItem(ShoppingItem item) {
     context.read<ShoppingNotifier>().removeShoppingItem(item);
   }
- 
-    super.initState();
-  }
- 
-  void _addItem(ShoppingItem item) async {
-    context.read<ShoppingNotifier>().addShoppingItem(item);
-  }
- 
-  void _toggleStatus(ShoppingItem shoppingItem) async {
-    await context.read<ShoppingNotifier>().setDoneShoppingItem(shoppingItem);
-  }
- 
-  void _removeItem(ShoppingItem item) {
-    context.read<ShoppingNotifier>().removeShoppingItem(item);
-  }
- 
+
   Icon _getCheckboxIcon(bool state) {
     return state
         ? Icon(
@@ -116,7 +85,7 @@ class _MyHomePageState extends State<MyHomePage> {
             color: Colors.lightBlue[400],
           );
   }
- 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -161,46 +130,12 @@ class _MyHomePageState extends State<MyHomePage> {
                 );
               },
             ),
-                itemBuilder: (context) => [
-                      PopupMenuItem(
-                          child: Text(
-                            'All',
-                            style: TextStyle(
-                                fontWeight: activeFilter == 'All'
-                                    ? FontWeight.bold
-                                    : FontWeight.normal),
-                          ),
-                          value: 'All'),
-                      PopupMenuItem(
-                          child: Text(
-                            'Done',
-                            style: TextStyle(
-                                fontWeight: activeFilter == 'Done'
-                                    ? FontWeight.bold
-                                    : FontWeight.normal),
-                          ),
-                          value: 'Done'),
-                      PopupMenuItem(
-                          child: Text(
-                            'Undone',
-                            style: TextStyle(
-                                fontWeight: activeFilter == 'Undone'
-                                    ? FontWeight.bold
-                                    : FontWeight.normal),
-                          ),
-                          value: 'Undone'),
-                    ],
-                onSelected: (String value) {
-                  setState(() {
-                    context.read<ShoppingNotifier>().filterShoppingItem(value);
-                  });
-                }),
           ],
         ),
         body: _buildbody(),
         floatingActionButton: PopupForm(callback: _addItem));
   }
-  
+
   Widget _buildbody() {
     return Consumer<ShoppingNotifier>(
       builder: (context, value, child) => value.fatching

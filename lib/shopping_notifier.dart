@@ -6,6 +6,8 @@ import './additem.dart';
 import './api.dart';
  
 
+// updated
+
 class ShoppingNotifier extends ChangeNotifier {
   List<ShoppingItem> _cachedList = [];
   List<ShoppingItem> list = [];
