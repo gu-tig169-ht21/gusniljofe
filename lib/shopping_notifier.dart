@@ -43,3 +43,5 @@ class ShoppingNotifier extends ChangeNotifier {
     notifyListeners();
   }
 }
+
+// updated
