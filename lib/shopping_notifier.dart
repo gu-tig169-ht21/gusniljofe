@@ -3,6 +3,8 @@ import 'package:flutter/foundation.dart';
 import 'additem.dart';
 import 'api.dart';
 
+// updated
+
 class ShoppingNotifier extends ChangeNotifier {
   List<ShoppingItem> _cachedList = [];
   List<ShoppingItem> list = [];
@@ -43,5 +45,3 @@ class ShoppingNotifier extends ChangeNotifier {
     notifyListeners();
   }
 }
-
-// updated

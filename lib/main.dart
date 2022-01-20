@@ -3,6 +3,7 @@ import 'package:my_first_app/shopping_notifier.dart';
 import 'package:my_first_app/widgets.dart';
 import 'package:provider/provider.dart';
 import 'additem.dart';
+// updated
 
 void main() {
   runApp(const MyApp());
@@ -186,5 +187,3 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 }
-
-// updated

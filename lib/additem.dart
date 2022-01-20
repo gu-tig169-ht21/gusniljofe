@@ -1,6 +1,6 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
+
+// updated
 
 class ShoppingItem {
   late String id;
@@ -29,5 +29,3 @@ class ShoppingItem {
     return map;
   }
 }
-
-// updated
