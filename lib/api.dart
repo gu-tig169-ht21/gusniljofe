@@ -6,8 +6,7 @@ import 'dart:convert';
 
 String url = 'https://todoapp-api-pyq5q.ondigitalocean.app';
 String apiKey = '8d89bbbd-62e5-44c3-97ea-b81ab773da13';
-String url = 'https://todoapp-api-pyq5q.ondigitalocean.app';
-String apiKey = '8d89bbbd-62e5-44c3-97ea-b81ab773da13';
+
  
 class Api {
   static Future<List<ShoppingItem>> getItems() async {
@@ -23,8 +22,7 @@ class Api {
     return [];
   }
  
-    return [];
-  }
+ 
  
   static Future<void> addShoppingItem(ShoppingItem shoppingItem) async {
     shoppingItem.status = false;
